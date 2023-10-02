@@ -3,21 +3,25 @@
 namespace Banking.UnitTests.BankAccountTests;
 public class MakingDeposits
 {
+    private readonly Account _account;
+
+    public MakingDeposits()
+    {
+        var testHelper = new BankAccountTestsHelpers();
+        _account = testHelper.CreateTestAccount();
+    }
+
     [Fact]
     public void MakingADepositIncreasesTheBalance()
     {
         // Given
-        var account = new Account();
-        var openingBalance = account.GetBalance();
+        var openingBalance = _account.GetBalance();
         var amountToDeposit = 100M;
 
         // When
-        account.Deposit(amountToDeposit);
+        _account.Deposit(amountToDeposit);
 
         // Then
-        Assert.Equal(openingBalance + amountToDeposit, account.GetBalance());
+        Assert.Equal(openingBalance + amountToDeposit, _account.GetBalance());
     }
-
-
-
 }
