@@ -4,6 +4,7 @@ namespace BugTrackerApi.Services;
 
 public class SoftwareCatalogManager
 {
+
     public async Task<OneOf<SoftwareEntity, SoftwareNotInCatalog>> IsSofwareInOurCatalogAsync(string software)
     {
         var supportedSoftware = new List<SoftwareEntity>()
@@ -13,16 +14,21 @@ public class SoftwareCatalogManager
             new SoftwareEntity { Id="code", Name="Visual Studio Code"}
         };
 
+
         var softwareEntity = supportedSoftware.SingleOrDefault(s => s.Id == software.ToLower().Trim());
 
         if (softwareEntity is null)
         {
             return new SoftwareNotInCatalog();
         }
+        else
+        {
+            return softwareEntity;
+        }
 
-        return softwareEntity;
     }
 }
+
 
 public record SoftwareEntity
 {

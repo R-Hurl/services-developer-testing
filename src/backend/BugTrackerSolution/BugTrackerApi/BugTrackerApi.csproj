@@ -4,10 +4,11 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>5e4e8568-e93e-40ca-9b3e-00fd2e36661c</UserSecretsId>
+    <UserSecretsId>57a78eae-6337-48da-9e79-b2629ce55c60</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Marten" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="OneOf" Version="3.0.263" />

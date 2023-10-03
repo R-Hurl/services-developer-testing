@@ -2,17 +2,17 @@
 using BugTrackerApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BugTrackerApi.Controllers;
 
 public class BugReportController : ControllerBase
 {
-    private readonly BugReportManager _bugReportManager;
 
-    public BugReportController(BugReportManager bugReportManager)
+    private readonly BugReportManager _bugManager;
+
+    public BugReportController(BugReportManager bugManager)
     {
-        _bugReportManager = bugReportManager;
+        _bugManager = bugManager;
     }
 
     [Authorize]
@@ -21,19 +21,12 @@ public class BugReportController : ControllerBase
     {
         var slugGenerator = new SlugUtils.SlugGenerator();
         var user = User.GetName();
-        var response = await _bugReportManager.CreateBugReportAsync(user, software, request);
+        var response = await _bugManager.CreateBugReportAsync(user, software, request);
 
         return response.Match<ActionResult>(
             report => StatusCode(201, report),
             _ => NotFound("That software is not supported")
-        );
+            );
     }
-}
 
-public static class ControllerAuthExtensions
-{
-    public static string GetName(this ClaimsPrincipal claims)
-    {
-        return claims?.Identity?.Name ?? throw new ApplicationException("Something is really wrong with Auth");
-    }
 }

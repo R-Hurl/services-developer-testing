@@ -7,30 +7,30 @@ namespace BugTrackingApi.ContractTests.BugReports;
 [Collection("FilingABugReport")]
 public class FilingABugReport
 {
-    private readonly IAlbaHost _host;
 
+    private readonly IAlbaHost _host;
     public FilingABugReport(FilingBugReportFixture fixture)
     {
         _host = fixture.AlbaHost;
     }
-
     [Theory]
     [MemberData(nameof(GetSamplesForTheory))]
-    public async Task FilingANewBugReport(string software, BugReportCreateRequest request, BugReportCreateResponse expectedResponse)
+    public async Task FilingANewBugReport(string software, BugReportCreateRequest request, BugReportCreateResponse expectedReponse)
     {
-        // Given
+
         // When (and some then)
         var response = await _host.Scenario(api =>
         {
             api.Post.Json(request).ToUrl($"/catalog/{software}/bugs");
             api.StatusCodeShouldBe(201);
+            // should be checking for the location here.
         });
 
         // Then
         var actualResponse = response.ReadAsJson<BugReportCreateResponse>();
         Assert.NotNull(actualResponse);
 
-        Assert.Equal(expectedResponse, actualResponse);
+        Assert.Equal(expectedReponse, actualResponse);
     }
 
     public static IEnumerable<object[]> GetSamplesForTheory()
@@ -42,6 +42,7 @@ public class FilingABugReport
         };
         var response1 = new BugReportCreateResponse
         {
+
             Id = "tacos-are-good", // Slug
             User = "Steve",
             Issue = request1,
@@ -67,5 +68,6 @@ public class FilingABugReport
 
         yield return new object[] { "excel", request1, response1 };
         yield return new object[] { "code", request2, response2 };
+
     }
 }
