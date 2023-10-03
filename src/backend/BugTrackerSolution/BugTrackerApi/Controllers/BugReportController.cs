@@ -8,30 +8,25 @@ namespace BugTrackerApi.Controllers;
 
 public class BugReportController : ControllerBase
 {
-    private readonly ISystemTime _systemTime;
+    private readonly BugReportManager _bugReportManager;
 
-    public BugReportController(ISystemTime systemTime)
+    public BugReportController(BugReportManager bugReportManager)
     {
-        _systemTime = systemTime;
+        _bugReportManager = bugReportManager;
     }
 
     [Authorize]
-    [HttpPost("/catalog/excel/bugs")]
-    public async Task<ActionResult> AddABugReport([FromBody] BugReportCreateRequest request)
+    [HttpPost("/catalog/{software}/bugs")]
+    public async Task<ActionResult<BugReportCreateResponse>> AddABugReport([FromBody] BugReportCreateRequest request, [FromRoute] string software)
     {
-        {
-            var name = User.GetName();
-            var response = new BugReportCreateResponse
-            {
-                Id = "excel-goes-boom",
-                Issue = request,
-                Software = "Excel",
-                Status = IssueStatus.InTriage,
-                User = name,
-                Created = _systemTime.GetCurrent()
-            };
-            return StatusCode(201, response);
-        }
+        var slugGenerator = new SlugUtils.SlugGenerator();
+        var user = User.GetName();
+        var response = await _bugReportManager.CreateBugReportAsync(user, software, request);
+
+        return response.Match<ActionResult>(
+            report => StatusCode(201, report),
+            _ => NotFound("That software is not supported")
+        );
     }
 }
 
