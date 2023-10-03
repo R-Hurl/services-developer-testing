@@ -2,6 +2,7 @@
 using BugTrackerApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BugTrackerApi.Controllers;
 
@@ -19,7 +20,7 @@ public class BugReportController : ControllerBase
     public async Task<ActionResult> AddABugReport([FromBody] BugReportCreateRequest request)
     {
         {
-            var name = User.Identity.Name;
+            var name = User.GetName();
             var response = new BugReportCreateResponse
             {
                 Id = "excel-goes-boom",
@@ -31,5 +32,13 @@ public class BugReportController : ControllerBase
             };
             return StatusCode(201, response);
         }
+    }
+}
+
+public static class ControllerAuthExtensions
+{
+    public static string GetName(this ClaimsPrincipal claims)
+    {
+        return claims?.Identity?.Name ?? throw new ApplicationException("Something is really wrong with Auth");
     }
 }
